@@ -14,8 +14,12 @@ class CPU {
     CPU(const std::string& config_file, const std::string& output_dir)
         : memory_system_(
               config_file, output_dir,
+              "", // output_prefix
               std::bind(&CPU::ReadCallBack, this, std::placeholders::_1),
-              std::bind(&CPU::WriteCallBack, this, std::placeholders::_1)),
+              std::bind(&CPU::WriteCallBack, this, std::placeholders::_1),
+              0, // interleave_bits_low
+              0  // interleave_bits_high
+              ),
           clk_(0) {}
     virtual void ClockTick() = 0;
     void ReadCallBack(uint64_t addr) { return; }

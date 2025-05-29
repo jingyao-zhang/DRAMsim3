@@ -3,10 +3,13 @@
 namespace dramsim3 {
 MemorySystem::MemorySystem(const std::string &config_file,
                            const std::string &output_dir,
+                           const std::string &output_prefix,
                            std::function<void(uint64_t)> read_callback,
-                           std::function<void(uint64_t)> write_callback)
+                           std::function<void(uint64_t)> write_callback,
+                           unsigned int interleave_bits_low,
+                           unsigned int interleave_bits_high)
     : config_(new Config(config_file, output_dir)) {
-    // TODO: ideal memory type?
+    // output_prefix, interleave_bits_low, interleave_bits_high 参数在这里被忽略
     if (config_->IsHMC()) {
         dram_system_ = new HMCMemorySystem(*config_, output_dir, read_callback,
                                            write_callback);
@@ -51,9 +54,14 @@ void MemorySystem::PrintStats() const { dram_system_->PrintStats(); }
 void MemorySystem::ResetStats() { dram_system_->ResetStats(); }
 
 MemorySystem* GetMemorySystem(const std::string &config_file, const std::string &output_dir,
+                 const std::string &output_prefix,
                  std::function<void(uint64_t)> read_callback,
-                 std::function<void(uint64_t)> write_callback) {
-    return new MemorySystem(config_file, output_dir, read_callback, write_callback);
+                 std::function<void(uint64_t)> write_callback,
+                 unsigned int interleave_bits_low,
+                 unsigned int interleave_bits_high) {
+    return new MemorySystem(config_file, output_dir, output_prefix, 
+                           read_callback, write_callback,
+                           interleave_bits_low, interleave_bits_high);
 }
 }  // namespace dramsim3
 
